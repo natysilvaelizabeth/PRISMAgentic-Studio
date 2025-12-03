@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "staging"
+    },
+    "location": {
+      "value": "eastus2"
+    },
+    "enablePrivateEndpoints": {
+      "value": true
+    },
+    "enableZoneRedundancy": {
+      "value": false
+    },
+    "enablePurview": {
+      "value": false
+    },
+    "enableDefender": {
+      "value": true
+    },
+    "openAiModelDeployments": {
+      "value": [
+        {
+          "name": "gpt-4o",
+          "model": "gpt-4o",
+          "version": "2024-05-13",
+          "capacity": 50
+        }
+      ]
+    },
+    "cosmosDbThroughput": {
+      "value": 2000
+    },
+    "tags": {
+      "value": {
+        "environment": "staging",
+        "cost-center": "engineering"
+      }
+    }
+  }
+}

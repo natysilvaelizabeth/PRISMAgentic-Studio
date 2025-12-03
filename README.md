@@ -6,9 +6,10 @@
 
 **Personalized Real-time Intelligent Segmentation & Marketing Agentic Platform**
 
-[![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com)
-[![AI Foundry](https://img.shields.io/badge/AI%20Foundry-6264A7?style=for-the-badge&logo=microsoft&logoColor=white)](https://azure.microsoft.com/products/ai-studio)
-[![Fabric](https://img.shields.io/badge/Microsoft%20Fabric-F25022?style=for-the-badge&logo=microsoft&logoColor=white)](https://www.microsoft.com/microsoft-fabric)
+[![Azure](https://img.shields.io/badge/Microsoft%20Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com)
+[![AI Foundry](https://img.shields.io/badge/Azure%20AI%20Foundry-5C2D91?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/products/ai-studio)
+[![Fabric](https://img.shields.io/badge/Microsoft%20Fabric-117865?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://www.microsoft.com/microsoft-fabric)
+[![Agent Framework](https://img.shields.io/badge/Microsoft%20Agent%20Framework-6B2D91?style=for-the-badge&logo=microsoft&logoColor=white)](https://learn.microsoft.com/agent-framework/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 [Overview](#overview) • [Key Features](#key-features) • [Architecture](#architecture) • [Getting Started](#getting-started) • [Deployment](#deployment) • [Usage](#usage) • [Contributing](#contributing)
@@ -152,6 +153,25 @@ PRISMAgentic Studio v2.0 follows these architectural principles:
 | **Defense in Depth** | Front Door + WAF + APIM + Private Endpoints |
 | **Observable by Default** | Centralized telemetry for all components |
 | **Infrastructure as Code** | 100% Bicep, deployed via azd CLI |
+
+### Technology Stack
+
+<div align="center">
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **Edge** | ![Azure Front Door](https://img.shields.io/badge/Front%20Door-0078D4?style=flat-square&logo=microsoftazure&logoColor=white) | Global load balancing, WAF, DDoS protection |
+| **API** | ![API Management](https://img.shields.io/badge/API%20Management-0078D4?style=flat-square&logo=microsoftazure&logoColor=white) | Gateway, rate limiting, OAuth 2.0 |
+| **AI Agents** | ![AI Foundry](https://img.shields.io/badge/AI%20Foundry-5C2D91?style=flat-square&logo=microsoftazure&logoColor=white) | Multi-agent orchestration, GPT-4o |
+| **Decisions** | ![Container Apps](https://img.shields.io/badge/Container%20Apps-0078D4?style=flat-square&logo=microsoftazure&logoColor=white) | Real-time Thompson Sampling |
+| **Graph** | ![Cosmos DB](https://img.shields.io/badge/Cosmos%20DB-0078D4?style=flat-square&logo=microsoftazure&logoColor=white) | Gremlin API for segment graph |
+| **State** | ![Cosmos DB](https://img.shields.io/badge/Cosmos%20DB-0078D4?style=flat-square&logo=microsoftazure&logoColor=white) | NoSQL API for experiment state |
+| **Cache** | ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) | Hot cache for <50ms latency |
+| **Analytics** | ![Fabric](https://img.shields.io/badge/Fabric-117865?style=flat-square&logo=microsoftazure&logoColor=white) | Real-Time Intelligence, OneLake |
+| **ML** | ![Azure ML](https://img.shields.io/badge/Azure%20ML-0078D4?style=flat-square&logo=microsoftazure&logoColor=white) | GNN training, Feature Store |
+| **UI** | ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) | Static Web App |
+
+</div>
 
 ### High-Level Overview
 ```
@@ -341,18 +361,18 @@ PRISMAgentic Studio v2.0 follows these architectural principles:
 ```
 prismagentic-studio/
 │
-├── 📁 .azure/                    
+├── 📁 .azure/                    # Azure Developer CLI configuration
 │   ├── config.yaml
 │   └── 📁 workflows/
 │       ├── azure-dev.yml
 │       └── ci-cd.yml
 │
-├── 📁 .devcontainer/            
+├── 📁 .devcontainer/             # VS Code Dev Container
 │   ├── devcontainer.json
 │   ├── Dockerfile
 │   └── post-create.sh
 │
-├── 📁 .github/                   
+├── 📁 .github/                   # GitHub Actions & templates
 │   ├── 📁 workflows/
 │   │   ├── ci.yml
 │   │   ├── cd-dev.yml
@@ -362,12 +382,12 @@ prismagentic-studio/
 │   ├── 📁 ISSUE_TEMPLATE/
 │   └── CODEOWNERS
 │
-├── 📁 infra/                   
+├── 📁 infra/                     # Infrastructure as Code (Bicep)
 │   ├── main.bicep
 │   ├── main.parameters.json
 │   ├── abbreviations.json
 │   │
-│   ├── 📁 core/
+│   ├── 📁 core/                  # Core Azure services
 │   │   ├── ai-foundry.bicep
 │   │   ├── api-management.bicep
 │   │   ├── container-apps.bicep       
@@ -380,41 +400,41 @@ prismagentic-studio/
 │   │   ├── signalr.bicep
 │   │   └── static-web-app.bicep
 │   │
-│   ├── 📁 fabric/
+│   ├── 📁 fabric/                # Microsoft Fabric resources
 │   │   ├── workspace.bicep
 │   │   ├── lakehouse.bicep
 │   │   └── eventstream.bicep
 │   │
-│   ├── 📁 security/
+│   ├── 📁 security/              # Security & identity
 │   │   ├── entra-id.bicep
 │   │   ├── key-vault.bicep
 │   │   ├── managed-identities.bicep
 │   │   ├── private-endpoints.bicep
 │   │   └── defender.bicep             
 │   │
-│   ├── 📁 governance/             
+│   ├── 📁 governance/            # Data governance
 │   │   └── purview.bicep
 │   │
-│   ├── 📁 observability/          
+│   ├── 📁 observability/         # Monitoring & alerting
 │   │   ├── app-insights.bicep
 │   │   ├── log-analytics.bicep
 │   │   ├── monitor.bicep
 │   │   └── dashboards.bicep
 │   │
-│   └── 📁 environments/
+│   └── 📁 environments/          # Per-environment parameters
 │       ├── dev.parameters.json
 │       ├── staging.parameters.json
 │       └── prod.parameters.json
 │
 ├── 📁 src/
 │   │
-│   ├── 📁 decision-engine/        
+│   ├── 📁 decision-engine/       # Real-Time Decision Engine (Container Apps)
 │   │   ├── 📁 src/
-│   │   │   ├── main.py
-│   │   │   ├── bandit.py            
-│   │   │   ├── cache.py
-│   │   │   ├── cosmos.py
-│   │   │   ├── models.py
+│   │   │   ├── main.py           # FastAPI application
+│   │   │   ├── bandit.py         # Thompson Sampling + MAD
+│   │   │   ├── cache.py          # Redis client
+│   │   │   ├── cosmos.py         # Cosmos DB client
+│   │   │   ├── models.py         # Pydantic schemas
 │   │   │   └── config.py
 │   │   ├── Dockerfile
 │   │   ├── requirements.txt
@@ -423,13 +443,13 @@ prismagentic-studio/
 │   │       ├── test_assignment.py
 │   │       └── test_latency.py
 │   │
-│   ├── 📁 agents/                  
+│   ├── 📁 agents/                # AI Foundry Agents (Control Plane)
 │   │   ├── 📁 _shared/
 │   │   │   ├── tools.py
 │   │   │   ├── prompts.py
 │   │   │   └── schemas.py
 │   │   │
-│   │   ├── 📁 orchestration/
+│   │   ├── 📁 orchestration/     # Orchestration agents (4)
 │   │   │   ├── 📁 campaign_orchestrator/
 │   │   │   │   ├── agent.yaml
 │   │   │   │   ├── 📁 prompts/
@@ -438,13 +458,13 @@ prismagentic-studio/
 │   │   │   ├── 📁 experiment_conductor/
 │   │   │   └── 📁 safety_guardian/
 │   │   │
-│   │   ├── 📁 functional/
+│   │   ├── 📁 functional/        # Functional agents (4)
 │   │   │   ├── 📁 segment_analyst/
 │   │   │   ├── 📁 content_retrieval/
 │   │   │   ├── 📁 variant_generator/
 │   │   │   └── 📁 campaign_insights/
 │   │   │
-│   │   └── 📁 analytical/            
+│   │   └── 📁 analytical/        # Analytical agents (6)
 │   │       ├── 📁 uplift_modeling/
 │   │       ├── 📁 fair_uplift/
 │   │       ├── 📁 xai_insights/
@@ -454,7 +474,7 @@ prismagentic-studio/
 │   │       │       └── transfer_config.py 
 │   │       └── 📁 non_stationarity/
 │   │
-│   ├── 📁 api/
+│   ├── 📁 api/                   # Azure Functions API
 │   │   ├── 📁 functions/
 │   │   │   ├── host.json
 │   │   │   ├── local.settings.json
@@ -469,22 +489,22 @@ prismagentic-studio/
 │   │       ├── openapi.yaml
 │   │       └── 📁 policies/
 │   │
-│   ├── 📁 ml/
-│   │   ├── 📁 gnn/
-│   │   │   ├── model.py
+│   ├── 📁 ml/                    # Machine Learning
+│   │   ├── 📁 gnn/               # Graph Neural Network
+│   │   │   ├── model.py          # GraphSAGE architecture
 │   │   │   ├── train.py
 │   │   │   ├── inference.py
 │   │   │   ├── data.py
 │   │   │   └── config.yaml
 │   │   │
-│   │   ├── 📁 feature_store/       
+│   │   ├── 📁 feature_store/     # Azure ML Feature Store
 │   │   │   ├── 📁 feature_sets/
 │   │   │   │   ├── segment_features.yaml
 │   │   │   │   ├── behavior_features.yaml
 │   │   │   │   └── engagement_features.yaml
 │   │   │   └── feature_retrieval.py
 │   │   │
-│   │   ├── 📁 pipelines/
+│   │   ├── 📁 pipelines/         # MLOps pipelines
 │   │   │   ├── train_gnn.yaml
 │   │   │   ├── update_embeddings.yaml
 │   │   │   └── evaluate_model.yaml
@@ -492,7 +512,7 @@ prismagentic-studio/
 │   │   └── 📁 environments/
 │   │       └── training.yaml
 │   │
-│   └── 📁 ui/
+│   └── 📁 ui/                    # React Frontend
 │       ├── package.json
 │       ├── tsconfig.json
 │       ├── vite.config.ts
@@ -501,11 +521,11 @@ prismagentic-studio/
 │       │   ├── main.tsx
 │       │   ├── App.tsx
 │       │   ├── 📁 components/
-│       │   │   ├── 📁 graph/
-│       │   │   ├── 📁 experiment/
-│       │   │   ├── 📁 dashboard/
-│       │   │   ├── 📁 segment/
-│       │   │   ├── 📁 audit/
+│       │   │   ├── 📁 graph/       # Graph Explorer
+│       │   │   ├── 📁 experiment/  # Experiment Designer
+│       │   │   ├── 📁 dashboard/   # Campaign Dashboard
+│       │   │   ├── 📁 segment/     # Segment Inspector
+│       │   │   ├── 📁 audit/       # Audit Logs
 │       │   │   └── 📁 common/
 │       │   ├── 📁 pages/
 │       │   ├── 📁 hooks/
@@ -536,7 +556,7 @@ prismagentic-studio/
 │   │   ├── 📁 scenarios/
 │   │   └── 📁 reports/
 │   │
-│   └── 📁 contracts/               
+│   └── 📁 contracts/             # Agent contract tests
 │       ├── 📁 agent_contracts/
 │       └── validate_contracts.py
 │
@@ -582,7 +602,7 @@ prismagentic-studio/
 │   ├── run-load-test.sh
 │   └── export-audit.py
 │
-├── azure.yaml
+├── azure.yaml                    # Azure Developer CLI manifest
 ├── requirements.txt
 ├── pyproject.toml
 ├── README.md
@@ -621,6 +641,7 @@ code .
 ```
 
 The dev container includes:
+
 - Azure CLI + azd CLI pre-installed
 - Python 3.11 with all dependencies
 - Node.js 18 LTS
@@ -938,6 +959,7 @@ Internet
 # Scale Decision Engine
 az containerapp update --name decision-engine --min-replicas 3 --max-replicas 10
 ```
+
 </details>
 
 <details>
@@ -952,6 +974,7 @@ az containerapp update --name decision-engine --min-replicas 3 --max-replicas 10
 az cosmosdb gremlin query \
   --query "g.V('gen-z-suburban').outE('similar').inV().limit(5)"
 ```
+
 </details>
 
 <details>
@@ -965,6 +988,7 @@ az cosmosdb gremlin query \
 # View agent logs
 az ml online-deployment get-logs --name campaign-orchestrator
 ```
+
 </details>
 
 ---
@@ -972,6 +996,7 @@ az ml online-deployment get-logs --name campaign-orchestrator
 ## Roadmap
 
 ### v1.x (Current)
+
 - [x] Transfer learning across segments
 - [x] Adaptive bandits (MAD algorithm)
 - [x] Progressive ring deployment
@@ -979,12 +1004,14 @@ az ml online-deployment get-logs --name campaign-orchestrator
 - [x] Real-Time Decision Engine
 
 ### v2.x (Planned)
+
 - [ ] Multi-channel orchestration (email, push, SMS, web)
 - [ ] Counterfactual simulation ("what if" scenarios)
 - [ ] Customer journey orchestration
 - [ ] Digital twin audiences for pre-testing
 
 ### v3.x (Future)
+
 - [ ] Multimodal variant generation (images, videos)
 - [ ] Self-evolving agents
 - [ ] Federated learning across organizations
@@ -1021,9 +1048,22 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 
 ## Acknowledgments
 
-- Built with [Azure AI Foundry](https://azure.microsoft.com/products/ai-studio)
-- Powered by [Microsoft Fabric](https://www.microsoft.com/microsoft-fabric)
-- Graph Neural Networks via [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/)
+<div align="center">
+
+Built with the Microsoft Azure ecosystem:
+
+[![Azure](https://img.shields.io/badge/Microsoft%20Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com)
+[![AI Foundry](https://img.shields.io/badge/Azure%20AI%20Foundry-5C2D91?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/products/ai-studio)
+[![Fabric](https://img.shields.io/badge/Microsoft%20Fabric-117865?style=for-the-badge&logo=microsoftazure&logoColor=white)](https://www.microsoft.com/microsoft-fabric)
+[![Agent Framework](https://img.shields.io/badge/Microsoft%20Agent%20Framework-6B2D91?style=for-the-badge&logo=microsoft&logoColor=white)](https://learn.microsoft.com/agent-framework/)
+
+Additional technologies:
+
+[![PyTorch](https://img.shields.io/badge/PyTorch%20Geometric-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](https://pytorch-geometric.readthedocs.io/)
+[![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+
+</div>
 
 ---
 

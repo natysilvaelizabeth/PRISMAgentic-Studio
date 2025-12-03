@@ -1,0 +1,130 @@
+# Azure Developer CLI (azd) Configuration
+# https://learn.microsoft.com/azure/developer/azure-developer-cli/azd-schema
+
+name: prismagentic-studio
+metadata:
+  template: prismagentic-studio@1.0.0
+
+# Infrastructure configuration
+infra:
+  provider: bicep
+  path: ./infra
+  module: main
+
+# Service definitions
+services:
+  # ============================================================================
+  # Decision Engine - Real-time variant assignment service
+  # ============================================================================
+  decision-engine:
+    project: ./src/decision-engine
+    language: python
+    host: containerapp
+    docker:
+      path: ./src/decision-engine/Dockerfile
+      context: ./src/decision-engine
+    hooks:
+      prepackage:
+        shell: sh
+        run: |
+          echo "Building Decision Engine..."
+          pip install -r requirements.txt
+
+  # ============================================================================
+  # API Functions - Backend Azure Functions
+  # ============================================================================
+  api:
+    project: ./src/api/functions
+    language: python
+    host: function
+    hooks:
+      prepackage:
+        shell: sh
+        run: |
+          echo "Installing API dependencies..."
+          pip install -r requirements.txt
+
+  # ============================================================================
+  # Web UI - React frontend
+  # ============================================================================
+  web:
+    project: ./src/ui
+    language: js
+    host: staticwebapp
+    dist: dist
+    hooks:
+      prepackage:
+        shell: sh
+        run: |
+          echo "Building UI..."
+          npm install
+          npm run build
+
+# Hooks for the entire deployment
+hooks:
+  # Pre-provision: Validate requirements
+  preprovision:
+    shell: sh
+    run: |
+      echo "🔍 Validating prerequisites..."
+      
+      # Check Azure CLI
+      if ! command -v az &> /dev/null; then
+        echo "❌ Azure CLI not found. Please install it."
+        exit 1
+      fi
+      
+      # Check logged in
+      if ! az account show &> /dev/null; then
+        echo "❌ Not logged in to Azure. Run 'az login' first."
+        exit 1
+      fi
+      
+      echo "✅ Prerequisites validated"
+
+  # Post-provision: Initialize data layer
+  postprovision:
+    shell: sh
+    run: |
+      echo "🔧 Post-provision setup..."
+      
+      # Get Cosmos DB connection string
+      COSMOS_ENDPOINT=$(azd env get-values | grep COSMOS_ENDPOINT | cut -d'=' -f2)
+      
+      if [ -n "$COSMOS_ENDPOINT" ]; then
+        echo "📊 Initializing Cosmos DB graph structure..."
+        python scripts/init-cosmos-graph.py --endpoint "$COSMOS_ENDPOINT" || true
+      fi
+      
+      echo "✅ Post-provision complete"
+
+  # Post-deploy: Run smoke tests
+  postdeploy:
+    shell: sh
+    run: |
+      echo "🧪 Running smoke tests..."
+      
+      # Get API endpoint
+      API_URL=$(azd env get-values | grep SERVICE_API_URI | cut -d'=' -f2)
+      
+      if [ -n "$API_URL" ]; then
+        echo "Testing health endpoint: $API_URL/api/health"
+        curl -s -o /dev/null -w "%{http_code}" "$API_URL/api/health" | grep -q "200" && \
+          echo "✅ Health check passed" || \
+          echo "⚠️ Health check failed"
+      fi
+      
+      echo "✅ Deployment complete!"
+
+# Pipeline configuration
+pipeline:
+  provider: github
+  secrets:
+    - AZURE_CREDENTIALS
+
+# Workflow triggers
+workflows:
+  up:
+    steps:
+      - azd provision
+      - azd deploy
